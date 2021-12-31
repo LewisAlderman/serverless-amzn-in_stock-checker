@@ -1,0 +1,32 @@
+org: lewisalderman
+app: elgato-amz-checker
+service: elgato-amz-checker
+
+frameworkVersion: '2 || 3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+
+custom:
+  TEST_SUCCESS: https://www.amazon.co.uk/Caf%C3%A9direct-Fairtrade-Picchu-Instant-Coffee/dp/B0746Q9NBB
+
+functions:
+  cronHandler:
+    handler: handler.run
+    events:
+      # every 2 mins - for testing
+      # - schedule: cron(*/2 * * * ? *)
+      # every hour (twice an hour) between 9am—11pm - for production
+      - schedule: cron(0,29 9-23 * * ? *)
+    environment:
+      # test url
+      # TARGET_URL: ${self:custom.TEST_SUCCESS}
+      # prod url:
+      TARGET_URL: ${param:TARGET_URL}
+      MAIL_USERNAME: ${param:MAIL_USERNAME}
+      MAIL_PASSWORD: ${param:MAIL_PASSWORD}
+      OAUTH_CLIENTID: ${param:OAUTH_CLIENTID}
+      OAUTH_CLIENT_SECRET: ${param:OAUTH_CLIENT_SECRET}
+      OAUTH_REFRESH_TOKEN: ${param:OAUTH_REFRESH_TOKEN}
